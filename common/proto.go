@@ -1,7 +1,7 @@
 package common
 
 import (
-	"github.com/dretay/labrack/proto"
+	"github.com/dretay/labrack-go/proto"
 	"github.com/golang/protobuf/proto"
 	"log"
 )

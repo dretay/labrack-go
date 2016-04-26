@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"github.com/hybridgroup/gobot/platforms/beaglebone"
 	// "math"
-	// "time"
-	"github.com/dretay/labrack/proto"
+	"github.com/dretay/labrack-go/proto"
 	"github.com/golang/protobuf/proto"
+	"time"
 )
 
 type sensorCommand_t struct {
@@ -24,32 +24,32 @@ func SendI2cMsg() {
 	}
 
 	// writing a number
-	// sm := &simple.SimpleMessage{
-	// 	LuckyNumber: proto.Int32(42),
-	// }
+	sm := &simple.SimpleMessage{
+		LuckyNumber: proto.Int32(10),
+	}
 
-	// data, err := proto.Marshal(sm)
-	// fmt.Println(data)
-	// if err != nil {
-	// 	panic("marshaling error: " + err.Error())
-	// }
-	// if err := beagleboneAdaptor.I2cWrite(0x04, data); err != nil {
-	// 	panic("failed to write bytes: " + err.Error())
-	// }
+	data, err := proto.Marshal(sm)
+	if err != nil {
+		panic("marshaling error: " + err.Error())
+	}
+	if err := beagleboneAdaptor.I2cWrite(0x04, data); err != nil {
+		panic("failed to write bytes: " + err.Error())
+	}
 
+	time.Sleep(time.Second)
 
 	//reading a number
-	sm := &simple.SimpleMessage{}
-	data, err := beagleboneAdaptor.I2cRead(0x04, 2)
+	sm = &simple.SimpleMessage{}
+	data, err = beagleboneAdaptor.I2cRead(0x04, 128)
 	if err != nil {
 		panic("failed to read byte: " + err.Error())
 	}
 
-	proto.Unmarshal(data,sm)
+	proto.Unmarshal(data, sm)
 	if err != nil {
-	  panic("unmarshaling error: "+ err.Error())
-  }
-  fmt.Println(sm)
+		panic("unmarshaling error: " + err.Error())
+	}
+	fmt.Println(sm)
 
 	// var bin_buf bytes.Buffer
 	// cmd := sensorCommand_t{cmd: 0x01, value: 0.5}

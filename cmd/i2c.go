@@ -1,10 +1,9 @@
 package main
 
 import (
-  "github.com/dretay/labrack/common"
+	"github.com/dretay/labrack-go/common"
 )
 
 func main() {
-  common.SendI2cMsg()
+	common.SendI2cMsg()
 }
-

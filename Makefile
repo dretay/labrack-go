@@ -2,7 +2,7 @@
 # Authored by Mikael Silvén
 
 # You want to edit these
-REPOSITORY	:= github.com/dretay/labrack
+REPOSITORY	:= github.com/dretay/labrack-go
 PACKAGES 	:= common
 
 # Maybe even these
@@ -23,7 +23,7 @@ PROTOC := protoc
 
 # But dont edit these
 GOOS		:= $(shell go env GOOS)
-GOARCH		:= $(shell go env GOARCH)
+GOARCH		:= arm#$(shell go env GOARCH)
 GOBUILD		:= GOOS=$(GOOS) GOARCH=$(GOARCH) go build
 GOINSTALL	:= GOOS=$(GOOS) GOARCH=$(GOARCH) go install -v
 RUNNABLES	:= $(wildcard $(CMD_DIR)/*.go)
@@ -34,13 +34,19 @@ GOFILES		:= $(TESTABLE) $(RUNNABLE)
 COV_FILES	:= $(foreach pkg, $(PACKAGES), $(pkg).$(COV_EXT))
 PROTO_FILES := $(wildcard $(PROTO_DIR)/*.proto)
 COMPILED_PROTO_FILES := $(wildcard $(PROTO_DIR)/*.go)
+COMPILED_BINARIES := $(wildcard $(BIN_DIR)/*)
 
-default:	fmt vet protoc test install build
+default:	fmt vet protoc test install build run
 
 $(notdir $(basename $(RUNNABLES))): .fmt .vet .test install
 		@GOOS=$(GOOS) GOARCH=$(GOARCH) $(GORUN) $(CMD_DIR)/$@.go
+run:
+	$(foreach binary,$(COMPILED_BINARIES), scp $(binary) drew@192.168.1.24:~/;)
+	ssh drew@192.168.1.24  './i2c'
+
 
 protoc:
+		git submodule update --remote --merge
 		$(foreach proto,$(PROTO_FILES), $(PROTOC) --go_out=. $(proto))
 bench:	$(TESTABLE)
 		$(GOTEST) -bench . $(foreach lib, $(sort $(^D)), $(REPOSITORY)/$(lib))
