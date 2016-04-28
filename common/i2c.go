@@ -23,12 +23,14 @@ func SendI2cMsg() {
 		panic("failed to start i2c: " + err.Error())
 	}
 
-	// writing a number
-	sm := &simple.SimpleMessage{
-		LuckyNumber: proto.Int32(10),
+	// build a command
+	command := &simple.CommandMessage{
+		Verb: simple.CommandMessage_RECORD.Enum(),
+		// Target: proto.Float32(1.0),
 	}
 
-	data, err := proto.Marshal(sm)
+	data, err := proto.Marshal(command)
+	fmt.Println(data)
 	if err != nil {
 		panic("marshaling error: " + err.Error())
 	}
@@ -36,20 +38,22 @@ func SendI2cMsg() {
 		panic("failed to write bytes: " + err.Error())
 	}
 
+	fmt.Println("Message sent")
+
 	time.Sleep(time.Second)
 
 	//reading a number
-	sm = &simple.SimpleMessage{}
-	data, err = beagleboneAdaptor.I2cRead(0x04, 128)
-	if err != nil {
-		panic("failed to read byte: " + err.Error())
-	}
+	// sm = &simple.SimpleMessage{}
+	// data, err = beagleboneAdaptor.I2cRead(0x04, 128)
+	// if err != nil {
+	// 	panic("failed to read byte: " + err.Error())
+	// }
 
-	proto.Unmarshal(data, sm)
-	if err != nil {
-		panic("unmarshaling error: " + err.Error())
-	}
-	fmt.Println(sm)
+	// proto.Unmarshal(data, sm)
+	// if err != nil {
+	// 	panic("unmarshaling error: " + err.Error())
+	// }
+	// fmt.Println(sm)
 
 	// var bin_buf bytes.Buffer
 	// cmd := sensorCommand_t{cmd: 0x01, value: 0.5}
